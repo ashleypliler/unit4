@@ -5,10 +5,16 @@ const {PORT} = process.env;
 const {getAllPosts,  getCurrentUserPosts, addPost, editPost, deletePost} = require('./controllers/posts');
 const {login, register} = require('./controllers/auth');
 const {isAuthenticated} = require('./middleware/isAuthenticated');
+import { sequelize } from './util/database';
+import {user} from './models/user'
+import {post} from './models/posts'
 
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+user.hasMany(post);
+post.belongsTo(user);
 
 app.post('/register', register);
 app.post('/login', login);
@@ -18,4 +24,10 @@ app.post('/posts', isAuthenticated, addPost)
 app.put('/posts/:id', isAuthenticated, editPost);
 app.delete('/posts/:id', isAuthenticated, deletePost);
 
-app.listen(PORT, () => console.log(`sync successful & server running on port ${PORT}`))
+sequelize.sync().then(() => {
+
+    app.listen(PORT, () => console.log(`sync successful & server running on port ${PORT}`))
+}).catch((error) => {
+    console.log(error)
+})
+
