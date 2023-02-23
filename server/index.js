@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const {PORT} = process.env;
 const {getAllPosts,  getCurrentUserPosts, addPost, editPost, deletePost} = require('./controllers/posts');
-const {login, register} = require('./controllers/auth');
+import {register, login} from "./controllers/auth"
 const {isAuthenticated} = require('./middleware/isAuthenticated');
 import { sequelize } from './util/database';
 import {user} from './models/user'
