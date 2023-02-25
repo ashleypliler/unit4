@@ -24,7 +24,7 @@ app.post('/posts', isAuthenticated, addPost)
 app.put('/posts/:id', isAuthenticated, editPost);
 app.delete('/posts/:id', isAuthenticated, deletePost);
 
-sequelize.sync().then(() => {
+sequelize.sync({force: true}).then(() => {
 
     app.listen(PORT, () => console.log(`sync successful & server running on port ${PORT}`))
 }).catch((error) => {
