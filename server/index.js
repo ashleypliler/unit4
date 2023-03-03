@@ -18,6 +18,7 @@ post.belongsTo(user);
 
 app.post('/register', register);
 app.post('/login', login);
+
 app.get('/posts', getAllPosts);
 app.get('/userposts/:userId', getCurrentUserPosts);
 app.post('/posts', isAuthenticated, addPost)
