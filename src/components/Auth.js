@@ -1,6 +1,8 @@
-import { useState, useContext } from "react";
-import axios from "axios";
-import AuthContext from "../store/authContext";
+
+
+import {useState, useContext} from 'react'
+import axios from 'axios'
+import AuthContext from '../store/authContext'
 
 const Auth = () => {
   const [username, setUsername] = useState("");
@@ -9,29 +11,59 @@ const Auth = () => {
 
   const authCtx = useContext(AuthContext);
 
-  const submitHandler = (e) => {
+  const handleUsername = (event) => {
+    setUsername(event.target.value)
+  };
+
+  const handlePassword = (event) => {
+    setPassword(event.target.value)
+  };
+
+  const handleClick = (event) => {
+    setRegister(!register)
+  };
+
+  const submitHandler = async(e) => {
     e.preventDefault();
+
+    let response;
 
     const body = {
       username,
-      password,
+      password
     };
 
-    const url = "https://socialmtn.devmountain.com";
+    // const url = "https://socialmtn.devmountain.com";
 
-    axios
-      .post(register ? `${url}/register` : `${url}/login`, body)
-      .then((res) => {
-        console.log(res.data);
-        authCtx.login(res.data.token, res.data.exp, res.data.userId);
-      })
-      .catch((err) => {
-        setUsername("");
-        setPassword("");
-      });
+    try {
+      if(register) {
+        response = await axios.post('/register', body)
+      } else {
+        response = await axios.post ('/login', body)
+      }
+    } catch (error) {
+      console.log(error);
+      setUsername("");
+      setPassword("");
+    }
 
-    console.log("submitHandler called");
+    console.log("response auth FE", response);
+    authCtx.login(response.data.token, response.data.exp, response.data.userId)
+    
   };
+  
+      // axios
+      //   .post(register ? `/register` : `/login`, body)
+      //   .then((res) => {
+      //     console.log(res.data);
+      //     authCtx.login(res.data.token, res.data.exp, res.data.userId);
+      //   })
+      //   .catch((err) => {
+      //     setUsername("");
+      //     setPassword("");
+      //   });
+  
+      // console.log("submitHandler called");
 
   return (
     <main>
@@ -42,18 +74,18 @@ const Auth = () => {
           placeholder="Username"
           type="text"
           className="form-input"
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={handleUsername}
         />
         <input
           value={password}
           placeholder="Password"
           type="text"
           className="form-input"
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={handlePassword}
         />
         <button className="form-btn">{register ? "Sign Up" : "Login"}</button>
       </form>
-      <button className="form-btn" onClick={() => setRegister(!register)}>
+      <button className="form-btn" onClick={handleClick}>
         Need to {register ? "Login" : "Sign Up"}?
       </button>
     </main>
